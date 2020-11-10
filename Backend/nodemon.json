@@ -1,0 +1,7 @@
+{
+    "env":
+    {
+        "API_KEY":"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",
+        "mongo":"mongodb+srv://Aj:1234567890@shoppingelf.g9ogi.mongodb.net/ShoppingElf?retryWrites=true&w=majority"
+    }
+}

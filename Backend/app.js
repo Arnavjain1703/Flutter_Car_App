@@ -5,9 +5,14 @@ require('dotenv').config()
 const bodyParser = require('body-parser');
 const compression = require('compression')
 const app = express();
+
 const helmet = require("helmet");
+
+const auth=require('./routes/auth')
+const verify=require('./routes/verification')
 app.use(helmet());
 app.use(compression());
+
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
@@ -17,6 +22,8 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
+app.use(auth);
+app.use(verify);
 app.use((error,req,res,next)=>{
     const status = error.statusCode || 500;
     const message = error.message;

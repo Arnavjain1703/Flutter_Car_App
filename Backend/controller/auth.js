@@ -1,5 +1,7 @@
 const user = require('../models/user');
-const {validationResult} = require('express-validator');
+const {
+    validationResult
+} = require('express-validator');
 const otps = require('../models/otp')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -24,14 +26,17 @@ exports.signup = (req, res, next) => {
     const email = req.body.email;
     const name = req.body.name;
     const password = req.body.password;
-    const contactNumber=req.body.contactNumber;
+    const contactNumber = req.body.contactNumber;
     const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
+
+    
     if (!strongRegex.test(req.body.password)) {
         const error = new Error('Enter Strong password');
         error.statusCode = 422;
         error.data = errors.array();
         throw error;
     }
+
     const strongRegex2 = new RegExp("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$");
     if (!strongRegex2.test(req.body.contactNumber)) {
         const error = new Error('Enter Correct Contact Number');
@@ -46,7 +51,7 @@ exports.signup = (req, res, next) => {
                     email: email,
                     password: hashpw,
                     name: name,
-                    contactNumber:contactNumber,
+                    contactNumber: contactNumber,
                 });
                 return User.save();
             }
@@ -55,7 +60,7 @@ exports.signup = (req, res, next) => {
                 message: "OTP IS SEND TO YOUR MAIL PLEASE VERIFY YOURSELF",
                 userId: result._id.toString()
             })
-            
+
             let OTP = '';
             for (let i = 0; i < 4; i++) {
                 OTP = OTP + Math.floor((Math.random() * 10));
@@ -64,7 +69,7 @@ exports.signup = (req, res, next) => {
                 otp: OTP,
                 userId: result._id.toString()
             })
-            
+
             Otps.save().then((result) => {
                     transport.sendMail({
                         to: req.body.email,
@@ -115,7 +120,7 @@ exports.login = (req, res, next) => {
             }
             if (!user.verified) {
                 res.status(200).json({
-                    message:"Please Verify Yourself First",
+                    message: "Please Verify Yourself First",
                     userId: user._id
                 })
             }
@@ -132,9 +137,9 @@ exports.login = (req, res, next) => {
             const token = jwt.sign({
                 email: loadedUser.email,
                 userId: loadedUser._id.toString(),
-                date:new Date(),
+                date: new Date(),
             }, "somesuperdoopersecret", {
-                
+
             });
             res.status(200).json({
                 token: token,
